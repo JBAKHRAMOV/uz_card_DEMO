@@ -10,6 +10,7 @@ import com.company.enums.StatusEnum;
 import com.company.mapper.TransactionsMapper;
 import com.company.repository.TransactionsRepository;
 import com.company.repository.custom.TransactionsCustomRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,13 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionsService {
-    @Autowired
-    private TransactionsRepository transactionsRepository;
-    @Autowired
-    private CardService cardService;
-    @Autowired
-    private TransactionsCustomRepository transactionsCustomRepository;
+    private final TransactionsRepository transactionsRepository;
+    private final CardService cardService;
+    private final TransactionsCustomRepository transactionsCustomRepository;
 
     @Transactional
     public TransactionsResponseDTO create(TransactionsRequestDTO requestDTO) {
@@ -49,99 +48,91 @@ public class TransactionsService {
         Pageable pageable = PageRequest.of(page, size);
 
 
-        Page<TransactionsMapper> entityPage = transactionsRepository.getByCardId(pageable, cid, StatusEnum.ACTIVE);
+        var pagination = transactionsRepository.getByCardId(pageable, cid, StatusEnum.ACTIVE);
 
-        List<TransactionsMapper> entityList = entityPage.getContent();
-        List<TransactionsResponseDTO> playListDTO = new LinkedList<>();
-        entityList.forEach(entity -> {
-            playListDTO.add(toDTOMapper(entity));
-        });
+        var list=pagination
+                .stream()
+                .map(this::toDTOMapper)
+                .toList();
 
-        return new PageImpl<>(playListDTO, pageable, entityPage.getTotalElements());
+        return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
     public PageImpl<TransactionsResponseDTO> getByPhone(int page, int size, String cid) {
         Pageable pageable = PageRequest.of(page, size);
 
 
-        Page<TransactionsMapper> entityPage = transactionsRepository.getByPhone(pageable, cid, StatusEnum.ACTIVE);
+        var pagination = transactionsRepository.getByPhone(pageable, cid, StatusEnum.ACTIVE);
 
-        List<TransactionsMapper> entityList = entityPage.getContent();
-        List<TransactionsResponseDTO> playListDTO = new LinkedList<>();
-        entityList.forEach(entity -> {
-            playListDTO.add(toDTOMapper(entity));
-        });
+        var list=pagination
+                .stream()
+                .map(this::toDTOMapper)
+                .toList();
 
-        return new PageImpl<>(playListDTO, pageable, entityPage.getTotalElements());
+        return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
     public PageImpl<TransactionsResponseDTO> getByProfileName(int page, int size, String cid) {
         Pageable pageable = PageRequest.of(page, size);
 
+        var pagination = transactionsRepository.getByProfileName(pageable, cid, StatusEnum.ACTIVE);
 
-        Page<TransactionsMapper> entityPage = transactionsRepository.getByProfileName(pageable, cid, StatusEnum.ACTIVE);
+        var list= pagination
+                .stream()
+                .map(this::toDTOMapper)
+                .toList();
 
-        List<TransactionsMapper> entityList = entityPage.getContent();
-        List<TransactionsResponseDTO> playListDTO = new LinkedList<>();
-        entityList.forEach(entity -> {
-            playListDTO.add(toDTOMapper(entity));
-        });
-
-        return new PageImpl<>(playListDTO, pageable, entityPage.getTotalElements());
+        return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
     public PageImpl<TransactionsResponseDTO> getByClientId(int page, int size, String cid) {
         Pageable pageable = PageRequest.of(page, size);
 
+        var pagination = transactionsRepository.getByClientId(pageable, cid, StatusEnum.ACTIVE);
 
-        Page<TransactionsMapper> entityPage = transactionsRepository.getByClientId(pageable, cid, StatusEnum.ACTIVE);
+        var list=pagination
+                .stream()
+                .map(this::toDTOMapper)
+                .toList();
 
-        List<TransactionsMapper> entityList = entityPage.getContent();
-        List<TransactionsResponseDTO> playListDTO = new LinkedList<>();
-        entityList.forEach(entity -> {
-            playListDTO.add(toDTOMapper(entity));
-        });
-
-        return new PageImpl<>(playListDTO, pageable, entityPage.getTotalElements());
+        return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
     public List<TransactionsResponseDTO> filter(TransactionsFilterRequestDTO filterDTO) {
-        List<TransactionsResponseDTO> responseDTO = new LinkedList<>();
-        transactionsCustomRepository.filter(filterDTO).forEach(entity -> {
-            responseDTO.add(toDTO(entity));
-        });
-        return responseDTO;
+        return transactionsCustomRepository.filter(filterDTO)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
+
+
+    /**
+     * OTHER METHODS*/
+
     private TransactionsResponseDTO toDTOMapper(TransactionsMapper entity) {
+
         TransactionsResponseDTO responseDTO = new TransactionsResponseDTO();
         responseDTO.setId(entity.getT_id());
 
-        CardResponseDTO fromCard = new CardResponseDTO();
-        fromCard.setId(entity.getFcr_id());
-        String fromCardNumber = getCardNumberSkr(entity.getFcr_number());
-        fromCard.setNumber(fromCardNumber);
+        responseDTO.setFromCard(
+                new CardResponseDTO(
+                        entity.getFcr_id(),
+                        getCardNumberSkr(entity.getFcr_number()),
+                        new ClientResponseDTO(
+                                entity.getFcl_id(),
+                                entity.getFcl_name(),
+                                entity.getFcl_surname())));
 
-        ClientResponseDTO fromClient = new ClientResponseDTO();
-        fromClient.setId(entity.getFcl_id());
-        fromClient.setName(entity.getFcl_name());
-        fromClient.setSurname(entity.getFcl_surname());
+        responseDTO.setToCard(
+                new CardResponseDTO(
+                        entity.getTcr_id(),
+                        getCardNumberSkr(entity.getTcr_number()),
+                        new ClientResponseDTO(
+                                entity.getTcl_id(),
+                                entity.getTcl_name(),
+                                entity.getTcl_surname())));
 
-        fromCard.setClient(fromClient);
-
-        CardResponseDTO toCard = new CardResponseDTO();
-        toCard.setId(entity.getTcr_id());
-
-        ClientResponseDTO toClient = new ClientResponseDTO();
-        toClient.setId(entity.getTcl_id());
-        toClient.setName(entity.getTcl_name());
-        toClient.setSurname(entity.getTcl_surname());
-
-        toCard.setClient(toClient);
-        toCard.setNumber(getCardNumberSkr(entity.getTcr_number()));
-
-        responseDTO.setToCard(toCard);
-        responseDTO.setFromCard(fromCard);
         responseDTO.setAmount(entity.getT_amount());
         responseDTO.setStatus(entity.getT_status());
         responseDTO.setCreatedDate(entity.getT_createdDate());
