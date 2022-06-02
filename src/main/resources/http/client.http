@@ -1,0 +1,55 @@
+### CREATE
+POST http://localhost:8080/client/create
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "name": "Ali",
+  "surname": "Aliyev",
+  "middleName": "Aliyevich",
+  "status": "ACTIVE"
+}
+
+###UPDATE DETAIL
+PUT http://localhost:8080/client/detail
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "id": "a7bbd637-84a6-4f49-8025-56cbafbff4de",
+  "name": "Vali",
+  "surname": "Valiyev",
+  "middleName": "Valiyevich"
+}
+
+### UPDATE STATUS
+PUT http://localhost:8080/client/status
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "id": "a7bbd637-84a6-4f49-8025-56cbafbff4de",
+  "status": "BLOCK"
+}
+
+### UPDATE PHONE
+PUT http://localhost:8080/client/phone
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "id": "a7bbd637-84a6-4f49-8025-56cbafbff4de",
+  "phoneNum": "+998938221502"
+}
+
+### GET PAGINATION
+GET http://localhost:8080/client/pagination
+Authorization: Basic admin adminjon
+
+### GET PAGINATION ( profile )
+GET http://localhost:8080/client/profile
+Authorization: Basic bankjon bankov
+
+### GET BY ID ( profile, admin )
+GET http://localhost:8080/client/get/a7bbd637-84a6-4f49-8025-56cbafbff4de
+Authorization: Basic profileUser profilejon

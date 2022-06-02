@@ -1,0 +1,27 @@
+### CREATE
+POST http://localhost:8080/transaction/create
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "fromCard": "b69931c5-f901-463f-9085-2b66e2706060",
+  "toCard": "b25351ac-1b2a-4077-a61f-24c371dc7980",
+  "amount": 200000
+}
+
+###GET BY
+GET http://localhost:8080/transaction/cardId/b69931c5-f901-463f-9085-2b66e2706060
+Authorization: Basic bankjon bankov
+
+
+
+
+
+
+
+
+
+
+
+
+

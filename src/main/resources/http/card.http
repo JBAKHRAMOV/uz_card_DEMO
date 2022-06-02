@@ -1,0 +1,47 @@
+### CREATE
+POST http://localhost:8080/card/
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "clientId": "a7bbd637-84a6-4f49-8025-56cbafbff4de",
+  "balance": 1000000 ,
+  "cardStatus": "ACTIVE"
+}
+
+### CHANGE STATUS
+PUT http://localhost:8080/card/change/status
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "id": "871ec459-12b9-42fb-bfa2-54cb30e510b6",
+  "status": "BLOCK"
+}
+
+### CHANGE PHONE
+PUT http://localhost:8080/card/chagePhone
+Content-Type: application/json
+Authorization: Basic bankjon bankov
+
+{
+  "cardNum": "860085624561",
+  "phoneNum": "+998938221502"
+}
+
+### GET BY PHONE
+GET http://localhost:8080/card/getYphone/+998938221502
+Authorization: Basic bankjon bankov
+
+
+### GET LIST BY CLIENT ID
+GET  http://localhost:8080/card/clientID/a7bbd637-84a6-4f49-8025-56cbafbff4de
+Authorization: Basic bankjon bankov
+
+
+### GET BY CARD NUMBER
+GET http://localhost:8080/card/number/860085624561
+Authorization: Basic admin adminjon
+
+### GET BALNCE BY CARD NUMBER
+GET http://localhost:8080/card/get/number/860085624561
