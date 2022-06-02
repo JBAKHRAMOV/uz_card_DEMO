@@ -44,6 +44,5 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/card/bank/**").hasAnyRole("BANK")
                 .anyRequest().authenticated().and().httpBasic();
         http.cors().disable().csrf().disable();
-        //.and().formLogin();
     }
 }
