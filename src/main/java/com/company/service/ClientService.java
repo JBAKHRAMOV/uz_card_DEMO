@@ -8,22 +8,20 @@ import com.company.entity.ClientEntity;
 import com.company.enums.StatusEnum;
 import com.company.exeption.ItemNotFoundException;
 import com.company.repository.ClientRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ClientService {
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public ClientResponseDTO create(ClientRequestDTO requestDTO) {
         clientRepository.findByPhone(requestDTO.getPhone()).orElseThrow(() -> {

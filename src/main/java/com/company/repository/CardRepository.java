@@ -2,16 +2,13 @@ package com.company.repository;
 
 import com.company.entity.CardEntity;
 import com.company.enums.StatusEnum;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
-import javax.persistence.metamodel.SingularAttribute;
 import javax.transaction.Transactional;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 

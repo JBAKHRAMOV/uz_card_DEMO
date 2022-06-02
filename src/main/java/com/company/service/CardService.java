@@ -6,22 +6,15 @@ import com.company.dto.request.CardRequestDTO;
 import com.company.dto.response.CardResponseDTO;
 import com.company.entity.CardEntity;
 import com.company.enums.StatusEnum;
-import com.company.exeption.InsufficientFundsException;
 import com.company.exeption.ItemNotFoundException;
-import com.company.repository.custom.CardCustomRepository;
 import com.company.repository.CardRepository;
+import com.company.repository.custom.CardCustomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Slf4j
 @Service
@@ -35,7 +28,7 @@ public class CardService {
 
     public CardResponseDTO create(CardRequestDTO requestDTO) {
 
-        clientService.get(requestDTO.getClientId());
+        clientService.checkOrGet(requestDTO.getClientId());
 
         String profileName = AuthorizationConfig.getCurrentProfileUserName();
 

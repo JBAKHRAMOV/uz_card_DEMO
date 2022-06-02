@@ -1,6 +1,5 @@
 package com.company.controller;
 
-import com.company.dto.request.CardFilterRequestDTO;
 import com.company.dto.request.TransactionsFilterRequestDTO;
 import com.company.dto.request.TransactionsRequestDTO;
 import com.company.service.TransactionsService;

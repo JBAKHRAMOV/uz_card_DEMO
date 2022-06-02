@@ -1,12 +1,10 @@
 package com.company.dto.response;
 
-import com.company.dto.request.ClientRequestDTO;
 import com.company.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data

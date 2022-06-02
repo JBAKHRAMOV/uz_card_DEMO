@@ -1,10 +1,8 @@
 package com.company.repository.custom;
 
 import com.company.dto.request.CardFilterRequestDTO;
-import com.company.dto.response.CardResponseDTO;
 import com.company.entity.CardEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -45,8 +43,7 @@ public class CardCustomRepository {
         }
 
         Query query = entityManager.createQuery(sql.toString(), CardEntity.class);
-        List<CardEntity> cardEntityList = query.getResultList();
 
-        return cardEntityList;
+        return query.getResultList();
     }
 }
