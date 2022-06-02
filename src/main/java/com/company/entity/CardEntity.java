@@ -28,5 +28,5 @@ public class CardEntity extends BestEntity {
     @Column(name = "profile_name")
     private String profileName;
     @Column(name = "expiry_date")
-    LocalDate expiryDate;
+    LocalDate expiryDate=LocalDate.now().plusYears(3);
 }

@@ -32,8 +32,6 @@ public class TransactionsService {
 
     @Transactional
     public TransactionsResponseDTO create(TransactionsRequestDTO requestDTO) {
-        cardService.get(requestDTO.getFromCardId(), requestDTO.getAmount());
-        cardService.get(requestDTO.getToCardId());
 
         cardService.paymentMinus(requestDTO.getAmount(), requestDTO.getFromCardId());
         cardService.paymentPlus(requestDTO.getAmount(), requestDTO.getToCardId());

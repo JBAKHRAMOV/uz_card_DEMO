@@ -40,8 +40,8 @@ public interface CardRepository extends JpaRepository<CardEntity, String> {
 
     @Transactional
     @Modifying
-    @Query("update CardEntity set balance = balance-:amount where id = :cid")
-    int paymentMinus(@Param("amount") Long amount, @Param("cid") String cid);
+    @Query("update CardEntity set balance = balance-:amount where number = :number")
+    int paymentMinus(@Param("amount") Long amount, @Param("number") String number);
 
     @Transactional
     @Modifying
