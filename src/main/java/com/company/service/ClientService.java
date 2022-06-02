@@ -30,7 +30,9 @@ public class ClientService {
             log.warn("there is already such a phone");
             throw new ItemNotFoundException("there is already such a phone");
         });
+
         String profileName = AuthorizationConfig.getCurrentProfileUserName();
+
         ClientEntity entity = new ClientEntity();
         entity.setName(requestDTO.getName());
         entity.setSurname(requestDTO.getSurname());
@@ -38,62 +40,55 @@ public class ClientService {
         entity.setPhone(requestDTO.getPhone());
         entity.setStatus(StatusEnum.ACTIVE);
         entity.setProfileName(profileName);
+
         clientRepository.save(entity);
+
         return toDTO(entity);
     }
 
     public ClientResponseDTO getById(String id) {
-        ClientEntity entity = clientRepository.findById(id).orElseThrow(() -> {
-            log.warn("Client id not found");
-            throw new ItemNotFoundException("Client id not found");
-        });
-        return toDTO(entity);
-    }
-    public ClientEntity get(String id) {
-        return clientRepository.findById(id).orElseThrow(() -> {
-            log.warn("Client id not found");
-            throw new ItemNotFoundException("Client id not found");
-        });
-
+        return toDTO(checkOrGet(id));
     }
 
     public List<ClientResponseDTO> getAll() {
-        List<ClientResponseDTO> dtoList = new LinkedList<>();
-        clientRepository.findAll().stream().forEach(entity -> {
-            dtoList.add(toDTO(entity));
-        });
-        return dtoList;
+        return clientRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public PageImpl<ClientResponseDTO> pagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
+        var pagination = clientRepository.findAll(pageable);
 
-        Page<ClientEntity> entityPage = clientRepository.findAll(pageable);
+        var list =pagination
+                .stream()
+                .map(this::toDTO)
+                .toList();
 
-        List<ClientEntity> entityList = entityPage.getContent();
-        List<ClientResponseDTO> playListDTO = new LinkedList<>();
-        entityList.forEach(entity -> {
-            playListDTO.add(toDTO(entity));
-        });
-
-        return new PageImpl<>(playListDTO, pageable, entityPage.getTotalElements());
+        return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
     public Boolean changeStatus(StatusEnum status, String id) {
-        int n = clientRepository.changeStatus(status, id);
-        return n > 0;
+        checkOrGet(id);
+        return 0 < clientRepository.changeStatus(status, id);
     }
 
     public Boolean changePhone(ClientChangePhoneRequestDTO requestDTO, String cid) {
-        int n = clientRepository.changePhone(requestDTO.getPhone(), cid);
-        return n > 0;
+        checkOrGet(cid);
+        return 0 < clientRepository.changePhone(requestDTO.getPhone(), cid);
     }
 
     public Boolean update(ClientRequestDTO requestDTO, String cid) {
-        int n = clientRepository.update(requestDTO.getName(), requestDTO.getSurname(), requestDTO.getMiddleName(), cid);
-        return n > 0;
+        checkOrGet(cid);
+        return 0 < clientRepository.update(requestDTO.getName(), requestDTO.getSurname(), requestDTO.getMiddleName(), cid);
     }
+
+
+    /**
+     * OHTER METHODS*/
+
 
     private ClientResponseDTO toDTO(ClientEntity entity) {
         ClientResponseDTO responseDTO = new ClientResponseDTO();
@@ -106,6 +101,13 @@ public class ClientService {
         responseDTO.setCreatedDate(entity.getCreatedDate());
         responseDTO.setProfileName(entity.getProfileName());
         return responseDTO;
+    }
+
+    public ClientEntity checkOrGet(String id){
+       return clientRepository.findById(id).orElseThrow(() -> {
+            log.warn("Client id not found");
+            throw new ItemNotFoundException("Client id not found");
+        });
     }
 
 
